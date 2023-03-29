@@ -842,11 +842,11 @@ class BootstrapHelper(object):
 #       image_002.jpg
 #       ...
 #     ...
-bootstrap_images_in_folder = 'DP-KW/Data/fitness_poses_images_in/train/'
+#bootstrap_images_in_folder = 'DP-KW/Data/fitness_poses_images_in/train/'
 
 # Output folders for bootstrapped images and CSVs.
-bootstrap_images_out_folder = 'DP-KW/Data/fitness_poses_images_out'
-bootstrap_csvs_out_folder = 'DP-KW/Data/fitness_poses_csvs_out'
+#bootstrap_images_out_folder = 'DP-KW/Data/fitness_poses_images_out'
+#bootstrap_csvs_out_folder = 'DP-KW/Data/fitness_poses_csvs_out'
 
 #bootstrap_images_in_folder = 'Data/fitness_poses_images_in/'
 
@@ -855,105 +855,55 @@ bootstrap_csvs_out_folder = 'DP-KW/Data/fitness_poses_csvs_out'
 #bootstrap_csvs_out_folder = 'Data/fitness_poses_csvs_out'
 
 # Initialize helper.
-bootstrap_helper = BootstrapHelper(
-    images_in_folder=bootstrap_images_in_folder,
-    images_out_folder=bootstrap_images_out_folder,
-    csvs_out_folder=bootstrap_csvs_out_folder,
-)
+#bootstrap_helper = BootstrapHelper(
+#    images_in_folder=bootstrap_images_in_folder,
+#    images_out_folder=bootstrap_images_out_folder,
+#    csvs_out_folder=bootstrap_csvs_out_folder,
+#)
 
 # Check how many pose classes and images for them are available.
-bootstrap_helper.print_images_in_statistics()
+#bootstrap_helper.print_images_in_statistics()
 
 # Bootstrap all images.
 # Set limit to some small number for debug.
-bootstrap_helper.bootstrap(per_pose_class_limit=None)
+#bootstrap_helper.bootstrap(per_pose_class_limit=None)
 
 # Check how many images were bootstrapped.
-bootstrap_helper.print_images_out_statistics()
+#bootstrap_helper.print_images_out_statistics()
 
 # After initial bootstrapping images without detected poses were still saved in
 # the folderd (but not in the CSVs) for debug purpose. Let's remove them.
-bootstrap_helper.align_images_and_csvs(print_removed_items=False)
-bootstrap_helper.print_images_out_statistics()
+#bootstrap_helper.align_images_and_csvs(print_removed_items=False)
+#bootstrap_helper.print_images_out_statistics()
 
 # Align CSVs with filtered images.
-bootstrap_helper.align_images_and_csvs(print_removed_items=False)
-bootstrap_helper.print_images_out_statistics()
-
-IMAGE_FILES = ['Data/fitness_poses_images_in/pushups_up/up5.png']
-BG_COLOR = (192, 192, 192) # gray
-with mp_holistic.Holistic(
-    static_image_mode=True,
-    model_complexity=2,
-    enable_segmentation=True,
-    refine_face_landmarks=True) as holistic:
-  for idx, file in enumerate(IMAGE_FILES):
-    image = cv2.imread(file)
-    image_height, image_width, _ = image.shape
-    # Convert the BGR image to RGB before processing.
-    results = holistic.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-
-    if results.pose_landmarks:
-      print(
-          f'Nose coordinates: ('
-          f'{results.pose_landmarks.landmark[mp_holistic.PoseLandmark.NOSE].x * image_width}, '
-          f'{results.pose_landmarks.landmark[mp_holistic.PoseLandmark.NOSE].y * image_height})'
-      )
-
-    annotated_image = image.copy()
-    # Draw segmentation on the image.
-    # To improve segmentation around boundaries, consider applying a joint
-    # bilateral filter to "results.segmentation_mask" with "image".
-    condition = np.stack((results.segmentation_mask,) * 3, axis=-1) > 0.1
-    bg_image = np.zeros(image.shape, dtype=np.uint8)
-    bg_image[:] = BG_COLOR
-    annotated_image = np.where(condition, annotated_image, bg_image)
-    # Draw pose, left and right hands, and face landmarks on the image.
-    mp_drawing.draw_landmarks(
-        annotated_image,
-        results.face_landmarks,
-        mp_holistic.FACEMESH_TESSELATION,
-        landmark_drawing_spec=None,
-        connection_drawing_spec=mp_drawing_styles
-        .get_default_face_mesh_tesselation_style())
-    mp_drawing.draw_landmarks(
-        annotated_image,
-        results.pose_landmarks,
-        mp_holistic.POSE_CONNECTIONS,
-        landmark_drawing_spec=mp_drawing_styles.
-        get_default_pose_landmarks_style())
-    cv2.imwrite('tmp/annotated_image' + str(idx) + '.png', annotated_image)
-    # Plot pose world landmarks.
-    mp_drawing.plot_landmarks(
-        results.pose_world_landmarks, mp_holistic.POSE_CONNECTIONS)
-    
-
-
+#bootstrap_helper.align_images_and_csvs(print_removed_items=False)
+#bootstrap_helper.print_images_out_statistics()
 
     # Find outliers.
 
 # Transforms pose landmarks into embedding.
-pose_embedder = FullBodyPoseEmbedder()
+#pose_embedder = FullBodyPoseEmbedder()
 
 # Classifies give pose against database of poses.
-pose_classifier = PoseClassifier(
-    pose_samples_folder=bootstrap_csvs_out_folder,
-    pose_embedder=pose_embedder,
-    top_n_by_max_distance=30,
-    top_n_by_mean_distance=10)
+#pose_classifier = PoseClassifier(
+#    pose_samples_folder=bootstrap_csvs_out_folder,
+#    pose_embedder=pose_embedder,
+#    top_n_by_max_distance=30,
+#    top_n_by_mean_distance=10)
 
-outliers = pose_classifier.find_pose_sample_outliers()
-print('Number of outliers: ', len(outliers))
+#outliers = pose_classifier.find_pose_sample_outliers()
+#print('Number of outliers: ', len(outliers))
 
 # Analyze outliers.
-bootstrap_helper.analyze_outliers(outliers)
+#bootstrap_helper.analyze_outliers(outliers)
 
 # Remove all outliers (if you don't want to manually pick).
-bootstrap_helper.remove_outliers(outliers)
+#bootstrap_helper.remove_outliers(outliers)
 
 # Align CSVs with images after removing outliers.
-bootstrap_helper.align_images_and_csvs(print_removed_items=False)
-bootstrap_helper.print_images_out_statistics()
+#bootstrap_helper.align_images_and_csvs(print_removed_items=False)
+#bootstrap_helper.print_images_out_statistics()
 
 
 
@@ -988,7 +938,7 @@ def dump_for_the_app():
   # files.download(pose_samples_csv_path)
 
 
-dump_for_the_app()
+
 
 # Upload your video.
 #uploaded = files.upload()

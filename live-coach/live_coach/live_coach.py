@@ -1,9 +1,11 @@
+
+import os
+#print(os.getcwd())
+
 import  argparse
 from utils import entrainement
 from utils import classification
-import os
 
-print(os.getcwd())
 
 # Initialisation des arguments du script : 
 parser = argparse.ArgumentParser()
