@@ -303,14 +303,15 @@ class PoseClassifier(object):
       with open(os.path.join(pose_samples_folder, file_name)) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=file_separator)
         for row in csv_reader:
-          assert len(row) == n_landmarks * n_dimensions + 1, 'Wrong number of values: {}'.format(len(row))
-          landmarks = np.array(row[1:], np.float32).reshape([n_landmarks, n_dimensions])
-          pose_samples.append(PoseSample(
-              name=row[0],
-              landmarks=landmarks,
-              class_name=class_name,
-              embedding=pose_embedder(landmarks),
-          ))
+          if row != []:
+            assert len(row) == n_landmarks * n_dimensions + 1, 'Wrong number of values: {}'.format(len(row))
+            landmarks = np.array(row[1:], np.float32).reshape([n_landmarks, n_dimensions])
+            pose_samples.append(PoseSample(
+                name=row[0],
+                landmarks=landmarks,
+                class_name=class_name,
+                embedding=pose_embedder(landmarks),
+            ))
 
     return pose_samples
 
@@ -770,13 +771,14 @@ class BootstrapHelper(object):
       with open(csv_out_path, 'w') as csv_out_file:
         csv_out_writer = csv.writer(csv_out_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         for row in rows:
-          image_name = row[0]
-          image_path = os.path.join(images_out_folder, image_name)
-          if os.path.exists(image_path):
-            image_names_in_csv.append(image_name)
-            csv_out_writer.writerow(row)
-          elif print_removed_items:
-            print('Removed image from CSV: ', image_path)
+          if row != []:
+            image_name = row[0]
+            image_path = os.path.join(images_out_folder, image_name)
+            if os.path.exists(image_path):
+              image_names_in_csv.append(image_name)
+              csv_out_writer.writerow(row)
+            elif print_removed_items:
+              print('Removed image from CSV: ', image_path)
 
       # Remove images without corresponding line in CSV.
       for image_name in os.listdir(images_out_folder):
